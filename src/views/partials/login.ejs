@@ -1,0 +1,15 @@
+<div>
+    <p>Iniciar sesión</p>
+      <form action="/auth/login" method="POST">
+        <% if(error) { %>
+            <p style="color: red; font-size: small"><%= error %></p>
+        <% } %>  
+        <label for="email">Email</label>
+        <input type="text" name="email" required/>
+        <br>
+        <label for="contrasenia">Contraseña</label>
+        <input type="contrasenia" name="contrasenia" required/>
+        <input type="submit" value="Iniciar sesion"/>
+        <a href="/auth/signup">Registrarme</a>
+    </form>
+</div>

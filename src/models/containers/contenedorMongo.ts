@@ -9,6 +9,14 @@ export default class contenedorMongo {
         this.model = model;
     }
 
+    public async guardarElemento(elem: IUser): Promise<any> {
+        try {
+            return await this.model.insertMany(elem)
+        } catch(err) {
+            return console.log('Error en guardarElemento. ', err);
+        }
+    }
+
     public async obtenerElementos(id?: number): Promise<any> {
         try{
             if(id){

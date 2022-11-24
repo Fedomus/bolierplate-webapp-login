@@ -1,0 +1,17 @@
+<h3>Alta de usuario</h3>
+<form action="/auth/signup" method="post">
+    <% if(mensaje) { %>
+        <p 
+        <% if(error) { %>  
+            style="color: red; font-size: small;">
+        <% } else { %>
+            >
+        <% } %>  
+        <%= mensaje %>    
+        </p>
+    <% } %>     
+    <label for="email">Email</label>
+    <input type="text" name="email" required> 
+    <br>
+    <input type="submit" value="Aceptar">
+</form>

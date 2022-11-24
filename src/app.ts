@@ -4,46 +4,57 @@ import {IRouter} from '../src/interfaces/IRouter';
 
 declare module 'express-session' {
     interface SessionData {
-        loggedUser?: boolean;
-        loggedAdmin?: boolean; 
-        userId?: number;
+        usuarioLogueado?: boolean;
+        adminLogueado?: boolean; 
+        email?: string;
     }
 }
 
 export class App {
     public app: Application;
+    public middleware: any[];
+    public routers: IRouter[];
 
     constructor(
 
         private port: number,
-        middleware: Array<any>,
-        routers: Array<IRouter>,
-        private staticPath: string = "/public"
+        middleware: any[],
+        routers: IRouter[],
+        private staticPath: string = "/public",
     
     ) {
         
         this.app = express();
+        this.middleware = middleware;
+        this.routers = routers;
 
-        this.middleware(middleware);
+    }
 
-        this.routes(routers);
+    public start(){
+        this.startMiddleware(this.middleware);
+
+        this.startRouters(this.routers);
 
         this.assets(this.staticPath);
+
+        this.setTemplateEngine();
+
+        this.listen();
     }
 
 
-    private middleware(mware: any[]) {
+    private startMiddleware(mware: any[]) {
         mware.forEach((m) => {
             this.app.use(m);
         });
     }
 
-    public addMiddleWare(middleWare: any) {
+    public addMiddleWare(middleWare: any[]) {
         this.app.use(middleWare);
     }
 
-    private routes(routes: Array<IRouter>) {
-        routes.forEach((r) => {
+    private startRouters(routers: IRouter[]) {
+        routers.forEach((r) => {
             this.app.use(r.path, r.name);
         });
     }
@@ -53,8 +64,12 @@ export class App {
         this.app.use(express.static(path));
     }
 
+    private setTemplateEngine() {
+        this.app.set('view engine', 'ejs');
+        this.app.set('views', './src/views');
+    }
 
-    public mongoDB(uri: string) {
+    public connectDB(uri: string) {
         const connect = () => {
             mongoose.connect(uri)
             .then(() => {
@@ -66,7 +81,6 @@ export class App {
             });
         };
         connect();
-
         mongoose.connection.on("disconnected", connect);
     }
 
@@ -75,4 +89,5 @@ export class App {
             console.log("Aplicación escuchando en puerto ", this.port);
         });
     }
+    
 }
